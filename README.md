@@ -1,4 +1,4 @@
 chronos
 =======
 
-Simple load testing framework for Java
+A simple load testing framework for Java
