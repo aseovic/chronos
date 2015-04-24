@@ -18,7 +18,7 @@ public abstract class AbstractRequest
             doExecute();
             return true;
             }
-        catch (Exception e)
+        catch (Throwable e)
             {
             return false;
             }

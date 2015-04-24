@@ -16,45 +16,55 @@ limitations under the License.
 
 package com.seovic.chronos.feed;
 
+
 import com.seovic.chronos.Request;
 import com.seovic.chronos.RequestFeed;
+
 
 /**
  * A {@link RequestFeed} implementation that always returns the same instance.
  *
  * @author Aleksandar Seovic  2013.04.16
  */
-public class SingletonFeed implements RequestFeed {
+public class SingletonFeed
+        implements RequestFeed
+    {
     private final Request request;
 
     /**
      * Create SingletonFeed instance.
      *
-     * @param requestClass  the class of the request to return (must have default constructor)
+     * @param requestClass the class of the request to return (must have default
+     *                     constructor)
      */
-    public SingletonFeed(Class<? extends Request> requestClass) {
-        try {
+    public SingletonFeed(Class<? extends Request> requestClass)
+        {
+        try
+            {
             this.request = requestClass.newInstance();
-        }
-        catch (Exception e) {
+            }
+        catch (Exception e)
+            {
             throw new RuntimeException(e);
+            }
         }
-    }
 
     /**
      * Create SingletonFeed instance.
      *
-     * @param request  request to return
+     * @param request request to return
      */
-    public SingletonFeed(Request request) {
+    public SingletonFeed(Request request)
+        {
         this.request = request;
-    }
+        }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Request next() {
+    public Request next()
+        {
         return request;
+        }
     }
-}

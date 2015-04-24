@@ -4,6 +4,8 @@ package com.seovic.chronos;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
 
+import com.seovic.chronos.feed.DurationLimiter;
+import com.seovic.chronos.feed.IterationLimiter;
 import com.seovic.chronos.feed.SingletonFeed;
 import com.seovic.chronos.util.TimeUtil;
 
@@ -25,6 +27,8 @@ public class LoadTest
     private int threadCount = 1;
     private Set<Publisher> publishers = new LinkedHashSet<Publisher>();
     private long publishInterval = 5000;
+    private long runLimit = 0;
+    private long timeLimit = 0;
     private RateLimiter rateLimiter;
     private RequestFeedFactory feedFactory;
     private final MetricRegistry metrics = new MetricRegistry();
@@ -64,7 +68,7 @@ public class LoadTest
         }
 
     /**
-     * Set publish interval.
+     * Set publish interval (the default is 5 seconds).
      *
      * @param interval the interval for test results publication
      * @param unit     time unit for the publication interval
@@ -144,13 +148,48 @@ public class LoadTest
         return this;
         }
 
-    public MetricsSnapshot start()
+    public MetricsSnapshot runFor(final long iterations)
         {
         if (feedFactory == null)
             {
             throw new IllegalStateException("Request feed factory must be configured");
             }
 
+        final RequestFeedFactory factory = feedFactory;
+        feedFactory = new RequestFeedFactory()
+            {
+            public RequestFeed create(int threadNumber, int threadCount)
+                {
+                return new IterationLimiter(factory.create(threadNumber, threadCount), iterations);
+                }
+            };
+
+        return run();
+        }
+
+    public MetricsSnapshot runFor(int duration, TimeUnit unit)
+        {
+        if (feedFactory == null)
+            {
+            throw new IllegalStateException("Request feed factory must be configured");
+            }
+
+        final long durationMillis = TimeUtil.toMillis(duration, unit);
+        final RequestFeedFactory factory = feedFactory;
+
+        feedFactory = new RequestFeedFactory()
+            {
+            public RequestFeed create(int threadNumber, int threadCount)
+                {
+                return new DurationLimiter(factory.create(threadNumber, threadCount), durationMillis);
+                }
+            };
+
+        return run();
+        }
+
+    protected MetricsSnapshot run()
+        {
         RequestFeed[] feeds = new RequestFeed[threadCount];
         for (int i = 0; i < threadCount; i++)
             {
@@ -180,11 +219,6 @@ public class LoadTest
         scheduler.shutdown();
 
         return new MetricsSnapshot(metrics);
-        }
-
-    private void stop()
-        {
-
         }
 
     private class RequestExecutor

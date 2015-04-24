@@ -30,11 +30,11 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-    <coherence.version>12.1.2-0-0</coherence.version>
+    <coherence.version>12.2.1-0-0-SNAPSHOT</coherence.version>
     <httpclient.version>(4.3.0,)</httpclient.version>
     <junit.version>(4.8.0,)</junit.version>
     <maven.version>3.0.4</maven.version>
-    <metrics.version>(3.0.0,)</metrics.version>
+    <metrics.version>(3.1.0,)</metrics.version>
     <slf4j.version>(1.7.0,)</slf4j.version>
   </properties>
 
@@ -76,15 +76,9 @@
         <version>${coherence.version}</version>
       </dependency>
       <dependency>
-        <groupId>com.codahale.metrics</groupId>
-        <artifactId>metrics-core</artifactId>
-        <version>${metrics.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-          </exclusion>
-        </exclusions>
+          <groupId>io.dropwizard.metrics</groupId>
+          <artifactId>metrics-core</artifactId>
+          <version>${metrics.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
