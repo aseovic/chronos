@@ -244,9 +244,9 @@ public class LoadTest
                 Timer tFailure = metrics.timer(name + "." + request.getName() + ".failure");
                 try
                     {
-                    long start = System.nanoTime();
-                    boolean success = request.execute();
-                    long duration = System.nanoTime() - start;
+                    long    start    = System.nanoTime();
+                    boolean success  = request.execute();
+                    long    duration = System.nanoTime() - start;
                     if (success)
                         {
                         tSuccess.update(duration, TimeUnit.NANOSECONDS);
