@@ -41,7 +41,7 @@ public class SingletonFeed
         {
         try
             {
-            this.request = requestClass.newInstance();
+            this.request = requestClass.getDeclaredConstructor().newInstance();
             }
         catch (Exception e)
             {

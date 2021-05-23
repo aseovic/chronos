@@ -16,7 +16,7 @@ public class IsEmptyRequest extends AbstractRequest
         }
 
     @Override
-    protected Object doExecute() throws Exception
+    protected Object doExecute() throws Throwable
         {
         return cache.isEmpty();
         }

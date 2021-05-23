@@ -20,7 +20,7 @@ public class PutRequest extends AbstractRequest
         }
 
     @Override
-    protected Object doExecute() throws Exception
+    protected Object doExecute() throws Throwable
         {
         return cache.put(key, value);
         }

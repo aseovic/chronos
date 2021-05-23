@@ -3,6 +3,8 @@ package com.seovic.chronos;
 import com.codahale.metrics.Timer;
 import com.seovic.chronos.util.TimeUtil;
 
+import java.time.Duration;
+import java.time.temporal.TemporalUnit;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -21,9 +23,9 @@ public class RateLimiter {
      * @param perDuration  the duration that the number of request applies to (typically 1)
      * @param perUnit      the time unit that the number of request applies to (SECONDS, MINUTES, HOURS or DAYS)
      */
-    public RateLimiter(long requests, int perDuration, TimeUnit perUnit) {
+    public RateLimiter(long requests, long perDuration, TemporalUnit perUnit) {
         this.requests = requests;
-        this.perMillis = TimeUtil.toMillis(perDuration, perUnit);
+        this.perMillis = Duration.of(perDuration, perUnit).toMillis();
     }
 
     /**

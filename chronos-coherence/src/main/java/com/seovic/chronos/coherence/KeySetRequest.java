@@ -26,7 +26,7 @@ public class KeySetRequest extends AbstractRequest
         }
 
     @Override
-    protected Object doExecute() throws Exception
+    protected Object doExecute() throws Throwable
         {
         return filter == null
                 ? cache.keySet()

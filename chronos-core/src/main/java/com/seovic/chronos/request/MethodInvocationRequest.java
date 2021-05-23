@@ -17,8 +17,6 @@ limitations under the License.
 package com.seovic.chronos.request;
 
 
-import com.seovic.chronos.Request;
-
 import java.lang.reflect.Method;
 
 
@@ -52,7 +50,7 @@ public class MethodInvocationRequest
         }
 
     @Override
-    public Object doExecute() throws Exception
+    public Object doExecute() throws Throwable
         {
         return method.invoke(target, arguments);
         }

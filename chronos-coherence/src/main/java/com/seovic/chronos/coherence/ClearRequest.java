@@ -16,7 +16,7 @@ public class ClearRequest extends AbstractRequest
         }
 
     @Override
-    protected Object doExecute() throws Exception
+    protected Object doExecute() throws Throwable
         {
         cache.clear();
         return null;

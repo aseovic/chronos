@@ -32,8 +32,8 @@ import java.util.*;
 public class CollectionFeed
         implements RequestFeed {
     private boolean shuffle;
-    private List<Request> requests;
-    private Iterator<Request> iterator;
+    private List<? extends Request> requests;
+    private Iterator<? extends Request> iterator;
 
     /**
      * Create CollectionFeed instance.
@@ -59,7 +59,7 @@ public class CollectionFeed
      *
      * @param requests  requests to iterate over
      */
-    public CollectionFeed(Collection<Request> requests) {
+    public CollectionFeed(Collection<? extends Request> requests) {
         this(false, requests);
     }
 
@@ -69,12 +69,12 @@ public class CollectionFeed
      * @param shuffle   whether to shuffle requests in the collection before each iteration
      * @param requests  requests to iterate over
      */
-    public CollectionFeed(boolean shuffle, Collection<Request> requests) {
+    public CollectionFeed(boolean shuffle, Collection<? extends Request> requests) {
         if (requests == null || requests.size() == 0) {
             throw new IllegalArgumentException("requests argument cannot be null or empty");
         }
         this.shuffle = shuffle;
-        this.requests = new ArrayList<Request>(requests);
+        this.requests = new ArrayList<>(requests);
     }
 
     /**

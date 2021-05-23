@@ -20,7 +20,7 @@ public class PutAllRequest extends AbstractRequest
         }
 
     @Override
-    protected Object doExecute() throws Exception
+    protected Object doExecute() throws Throwable
         {
         cache.putAll(map);
         return null;

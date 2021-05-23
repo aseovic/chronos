@@ -1,16 +1,13 @@
 package com.seovic.chronos.publisher;
 
-
 import com.seovic.chronos.Publisher;
 import com.seovic.chronos.MetricsSnapshot;
-import com.seovic.chronos.TimerSnapshot;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
-
-import java.util.Date;
-import java.util.Map;
-
 
 /**
  * Prints test results.
@@ -27,6 +24,11 @@ public class PrinterPublisher
         this(System.out);
         }
 
+    public PrinterPublisher(File file)
+        {
+        this(Publisher.createFileOutputStream(file));
+        }
+
     public PrinterPublisher(OutputStream out)
         {
         this(new PrintStream(out));
@@ -40,13 +42,7 @@ public class PrinterPublisher
     @Override
     public void publish(MetricsSnapshot metrics)
         {
-        Date time = new Date(metrics.getTimestamp());
-
-        for (Map.Entry<String, TimerSnapshot> result : metrics.getTimers().entrySet())
-            {
-            out.println(time + " - " + result.getKey() + ": " + result.getValue());
-            }
-
+        out.println(metrics);
         out.flush();
         }
     }

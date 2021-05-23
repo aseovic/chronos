@@ -18,7 +18,7 @@ public class RemoveRequest extends AbstractRequest
         }
 
     @Override
-    protected Object doExecute() throws Exception
+    protected Object doExecute() throws Throwable
         {
         return cache.remove(key);
         }

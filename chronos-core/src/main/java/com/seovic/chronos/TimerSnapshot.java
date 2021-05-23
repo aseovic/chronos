@@ -1,9 +1,11 @@
 package com.seovic.chronos;
 
-
 import com.codahale.metrics.Snapshot;
 import com.codahale.metrics.Timer;
-
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Aleksandar Seovic  2014.05.25
@@ -11,20 +13,15 @@ import com.codahale.metrics.Timer;
 public class TimerSnapshot
     {
     private long count;
-    private double oneMinuteRate;
-    private double fiveMinuteRate;
-    private double fifteenMinuteRate;
-    private double meanRate;
-    private Snapshot snapshot;
 
+    private double throughput;
+
+    private Snapshot snapshot;
 
     public TimerSnapshot(Timer timer)
         {
         count = timer.getCount();
-        oneMinuteRate = timer.getOneMinuteRate();
-        fiveMinuteRate = timer.getFiveMinuteRate();
-        fifteenMinuteRate = timer.getFifteenMinuteRate();
-        meanRate = timer.getMeanRate();
+        throughput = timer.getMeanRate();
         snapshot = timer.getSnapshot();
         }
 
@@ -33,24 +30,9 @@ public class TimerSnapshot
         return count;
         }
 
-    public double getOneMinuteRate()
+    public double getThroughput()
         {
-        return oneMinuteRate;
-        }
-
-    public double getFiveMinuteRate()
-        {
-        return fiveMinuteRate;
-        }
-
-    public double getFifteenMinuteRate()
-        {
-        return fifteenMinuteRate;
-        }
-
-    public double getMeanRate()
-        {
-        return meanRate;
+        return throughput;
         }
 
     public double getMedian()
@@ -105,23 +87,39 @@ public class TimerSnapshot
 
     public String toString()
         {
-        StringBuilder sb = new StringBuilder();
-        sb.append("count=").append(getCount()).append(", ");
-        sb.append("median=").append(snapshot.getMedian()).append(", ");
-        sb.append("75%=").append(snapshot.get75thPercentile()).append(", ");
-        sb.append("95%=").append(snapshot.get95thPercentile()).append(", ");
-        sb.append("98%=").append(snapshot.get98thPercentile()).append(", ");
-        sb.append("99%=").append(snapshot.get99thPercentile()).append(", ");
-        sb.append("99.9%=").append(snapshot.get999thPercentile()).append(", ");
-        sb.append("max=").append(snapshot.getMax()).append(", ");
-        sb.append("min=").append(snapshot.getMin()).append(", ");
-        sb.append("mean=").append(snapshot.getMean()).append(", ");
-        sb.append("std dev=").append(snapshot.getStdDev()).append(", ");
-        sb.append("mean rate=").append(getMeanRate()).append(", ");
-        sb.append("1 min rate=").append(getOneMinuteRate()).append(", ");
-        sb.append("5 min rate=").append(getFiveMinuteRate()).append(", ");
-        sb.append("15 min rate=").append(getFifteenMinuteRate());
-        return sb.toString();
+        return toString(TimeUnit.MILLISECONDS);
         }
 
+    public String toString(TimeUnit unit)
+        {
+        return "count=" + String.format("%,d", getCount())
+               + " throughput=" + String.format("%,.0f", getThroughput())
+               + " min=" + convert(snapshot.getMin(), unit)
+               + " max=" + convert(snapshot.getMax(), unit)
+               + " avg=" + convert(snapshot.getMean(), unit)
+               + " std=" + convert(snapshot.getStdDev(), unit)
+               + " 50%=" + convert(snapshot.getMedian(), unit)
+               + " 75%=" + convert(snapshot.get75thPercentile(), unit)
+               + " 95%=" + convert(snapshot.get95thPercentile(), unit)
+               + " 98%=" + convert(snapshot.get98thPercentile(), unit)
+               + " 99%=" + convert(snapshot.get99thPercentile(), unit)
+               + " 99.9%=" + convert(snapshot.get999thPercentile(), unit);
+        }
+
+    private String convert(double nanos, TimeUnit unit)
+        {
+        switch (unit)
+            {
+            case NANOSECONDS:
+                return String.format("%,.0fns", nanos);
+            case MICROSECONDS:
+                return String.format("%,.3fus", nanos / 1_000);
+            case MILLISECONDS:
+                return String.format("%,.3fms", nanos / 1_000_000);
+            case SECONDS:
+                return String.format("%,.3fs", nanos / 1_000_000_000);
+            default:
+                throw new IllegalArgumentException("Only ns, us, ms and s are supported");
+            }
+        }
     }

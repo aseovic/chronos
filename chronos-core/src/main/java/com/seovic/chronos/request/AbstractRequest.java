@@ -24,5 +24,5 @@ public abstract class AbstractRequest
             }
         }
 
-    protected abstract Object doExecute() throws Exception;
+    protected abstract Object doExecute() throws Throwable;
     }

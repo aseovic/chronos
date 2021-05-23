@@ -20,7 +20,7 @@ public class GetRequest extends AbstractRequest
         this.key = key;
         }
 
-    protected Object doExecute() throws Exception
+    protected Object doExecute() throws Throwable
         {
         return cache.get(key);
         }

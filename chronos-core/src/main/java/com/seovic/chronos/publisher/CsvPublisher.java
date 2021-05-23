@@ -20,14 +20,14 @@ public class CsvPublisher
     {
     private OutputStream out;
 
-    public CsvPublisher(String fileName) throws FileNotFoundException
+    public CsvPublisher(String fileName)
         {
         this(new File(fileName));
         }
 
-    public CsvPublisher(File file) throws FileNotFoundException
+    public CsvPublisher(File file)
         {
-        this(new FileOutputStream(file));
+        this(Publisher.createFileOutputStream(file));
         }
 
     public CsvPublisher(OutputStream out)

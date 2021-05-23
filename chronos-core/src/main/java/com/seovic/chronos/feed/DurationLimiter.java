@@ -3,6 +3,7 @@ package com.seovic.chronos.feed;
 
 import com.seovic.chronos.Request;
 import com.seovic.chronos.RequestFeed;
+import java.time.Duration;
 import java.util.concurrent.atomic.AtomicLong;
 
 
@@ -17,7 +18,7 @@ public class DurationLimiter
     private volatile long start;
 
     private final RequestFeed feed;
-    private final long limit;
+    private final Duration limit;
 
     /**
      * Construct DurationLimiter instance.
@@ -25,7 +26,7 @@ public class DurationLimiter
      * @param feed   the RequestFeed to wrap
      * @param limit  the number of milliseconds to limit the request generation to
      */
-    public DurationLimiter(RequestFeed feed, long limit)
+    public DurationLimiter(RequestFeed feed, Duration limit)
         {
         this.feed  = feed;
         this.limit = limit;
@@ -40,6 +41,6 @@ public class DurationLimiter
             }
 
         long t = System.currentTimeMillis();
-        return t - start > limit ? null : feed.next();
+        return t - start > limit.toMillis() ? null : feed.next();
         }
     }

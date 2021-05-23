@@ -7,9 +7,7 @@ import com.seovic.chronos.TimerSnapshot;
 
 import com.seovic.chronos.util.GraphiteWriter;
 
-import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 import java.util.Map;
 import java.util.logging.Level;
@@ -29,20 +27,26 @@ public class GraphitePublisher
 
     private final String host;
     private final int port;
-    private String localhost;
+    private final String localHost;
+
+    public GraphitePublisher(String hostAndPort)
+        {
+        String[] parts = hostAndPort.split(":");
+        if (parts.length != 2)
+            {
+            throw new IllegalArgumentException("Host and port for the Graphite server must be specified in host:port format");
+            }
+
+        this.host = parts[0];
+        this.port = Integer.parseInt(parts[1]);
+        this.localHost = Publisher.getLocalHostName();
+        }
 
     public GraphitePublisher(String host, int port)
         {
         this.host = host;
         this.port = port;
-        try
-            {
-            localhost = InetAddress.getLocalHost().toString();
-            }
-        catch (UnknownHostException e)
-            {
-            localhost = "localhost";
-            }
+        this.localHost = Publisher.getLocalHostName();
         }
 
     @Override
@@ -56,7 +60,7 @@ public class GraphitePublisher
 
             for (Map.Entry<String, TimerSnapshot> result : metrics.getTimers().entrySet())
                 {
-                String prefix = "chronos." + localhost + "." + result.getKey() + ".";
+                String prefix = "chronos." + metrics.getTestName() + localHost + "." + result.getKey() + ".";
                 TimerSnapshot stats = result.getValue();
 
                 writer.write(prefix + "count", stats.getCount(), time);
@@ -70,10 +74,7 @@ public class GraphitePublisher
                 writer.write(prefix + "min", stats.getMin(), time);
                 writer.write(prefix + "mean", stats.getMean(), time);
                 writer.write(prefix + "std-dev", stats.getStdDev(), time);
-                writer.write(prefix + "mean-rate", stats.getMeanRate(), time);
-                writer.write(prefix + "1min-rate", stats.getOneMinuteRate(), time);
-                writer.write(prefix + "5min-rate", stats.getFiveMinuteRate(), time);
-                writer.write(prefix + "15min-rate", stats.getFifteenMinuteRate(), time);
+                writer.write(prefix + "mean-rate", stats.getThroughput(), time);
                 }
             writer.flush();
             }

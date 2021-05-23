@@ -21,7 +21,7 @@ public class InvokeRequest extends AbstractRequest
         }
 
     @Override
-    protected Object doExecute() throws Exception
+    protected Object doExecute() throws Throwable
         {
         return cache.invoke(key, agent);
         }

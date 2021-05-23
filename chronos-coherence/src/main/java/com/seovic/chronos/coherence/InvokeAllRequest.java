@@ -38,7 +38,7 @@ public class InvokeAllRequest extends AbstractRequest
         }
 
     @Override
-    protected Object doExecute() throws Exception
+    protected Object doExecute() throws Throwable
         {
         return filter == null
                 ? cache.invokeAll(collKeys, agent)

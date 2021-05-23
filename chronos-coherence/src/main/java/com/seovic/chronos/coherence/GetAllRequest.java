@@ -20,7 +20,7 @@ public class GetAllRequest extends AbstractRequest
         }
 
     @Override
-    protected Object doExecute() throws Exception
+    protected Object doExecute() throws Throwable
         {
         return cache.getAll(colKeys);
         }
